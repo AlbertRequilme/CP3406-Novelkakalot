@@ -55,7 +55,11 @@ fun BookListScreen(navigateToAddEdit: () -> Unit, viewModel: BookViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(items = sampleBooks) { book ->
+                val filteredBooks = books.filter {
+                    it.title.contains(query, ignoreCase = true) ||
+                            it.author.contains(query, ignoreCase = true)
+                }
+                items(filteredBooks) { book ->
                     BookCard(book = book)
                 }
             }
