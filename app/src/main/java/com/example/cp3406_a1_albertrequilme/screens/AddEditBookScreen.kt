@@ -18,10 +18,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import android.app.Application
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.outlined.Star
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.cp3406_a1_albertrequilme.data.Book
 import com.example.cp3406_a1_albertrequilme.data.BookViewModel
 import com.example.cp3406_a1_albertrequilme.ui.theme.CP3406A1AlbertRequilmeTheme
+import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,10 +76,22 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 valueRange = 0f..1f,
                 modifier = Modifier.fillMaxWidth()
             )
-            Text("Rating: ${rating}")
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                repeat(5) { index ->
+                    val filled = index < rating.toInt()
+                    Icon(
+                        imageVector = if (filled) Icons.Filled.Star else Icons.Outlined.Star,
+                        contentDescription = null,
+                        tint = Color(0xFFFFC107),
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Rating: ${rating.toInt()}", style = MaterialTheme.typography.bodyMedium)
+            }
             Slider(
                 value = rating,
-                onValueChange = { rating = it },
+                onValueChange = { rating = it.roundToInt().toFloat() },
                 valueRange = 0f..5f,
                 steps = 4, // allows 0,1,2,3,4,5
                 modifier = Modifier.fillMaxWidth()
