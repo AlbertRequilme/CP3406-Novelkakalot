@@ -1,9 +1,9 @@
 package com.example.cp3406_a1_albertrequilme.screens
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -11,21 +11,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.platform.LocalContext
 import android.app.Application
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.ui.unit.dp
 import com.example.cp3406_a1_albertrequilme.data.Book
 import com.example.cp3406_a1_albertrequilme.data.BookViewModel
 import com.example.cp3406_a1_albertrequilme.ui.theme.CP3406A1AlbertRequilmeTheme
@@ -35,6 +28,9 @@ import com.example.cp3406_a1_albertrequilme.ui.theme.CP3406A1AlbertRequilmeTheme
 fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
     var title by remember { mutableStateOf("") }
     var author by remember { mutableStateOf("") }
+    var progress by remember { mutableStateOf(0f) }
+    var rating by remember { mutableStateOf(0f) }
+    var review by remember { mutableStateOf("") }
 
     Scaffold(
         topBar = {
@@ -43,7 +39,7 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,  // Use Material icon
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,  // Use Material icon
                             contentDescription = "Back"
                         )
                     }
@@ -69,8 +65,34 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 label = { Text("Author") },
                 modifier = Modifier.fillMaxWidth()
             )
+            Text("Progress: ${(progress * 100).toInt()}%")
+            Slider(
+                value = progress,
+                onValueChange = { progress = it },
+                valueRange = 0f..1f,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text("Rating: ${rating}")
+            Slider(
+                value = rating,
+                onValueChange = { rating = it },
+                valueRange = 0f..5f,
+                steps = 4, // allows 0,1,2,3,4,5
+                modifier = Modifier.fillMaxWidth()
+            )
+            OutlinedTextField(
+                value = review,
+                onValueChange = { review = it },
+                label = { Text("Review") },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+
             Button(onClick = {
-                viewModel.insertBook(Book(title = title, author = author))
+                viewModel.insertBook(Book(
+                    title = title,
+                    author = author,
+                    progress = (progress * 100).toInt()))
                 navigateBack()
             }) { Text("Save") }
             IconButton(onClick = { /* Barcode scan logic */ }) {
