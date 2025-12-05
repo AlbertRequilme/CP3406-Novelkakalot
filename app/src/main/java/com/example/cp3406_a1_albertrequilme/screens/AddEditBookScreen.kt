@@ -32,8 +32,8 @@ import kotlin.math.roundToInt
 fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
     var title by remember { mutableStateOf("") }
     var author by remember { mutableStateOf("") }
-    var progress by remember { mutableStateOf(0f) }
-    var rating by remember { mutableStateOf(0f) }
+    var progress by remember { mutableStateOf(0f) }   // keep as Float (0.0–1.0)
+    var rating by remember { mutableStateOf(0f) }    // keep as Float (0–5)
     var review by remember { mutableStateOf("") }
 
     Scaffold(
@@ -43,7 +43,7 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 navigationIcon = {
                     IconButton(onClick = navigateBack) {
                         Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,  // Use Material icon
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -69,6 +69,8 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 label = { Text("Author") },
                 modifier = Modifier.fillMaxWidth()
             )
+
+            // Progress slider
             Text("Progress: ${(progress * 100).toInt()}%")
             Slider(
                 value = progress,
@@ -76,6 +78,8 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 valueRange = 0f..1f,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            // Rating stars + slider
             Row(verticalAlignment = Alignment.CenterVertically) {
                 repeat(5) { index ->
                     val filled = index < rating.toInt()
@@ -91,11 +95,13 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
             }
             Slider(
                 value = rating,
-                onValueChange = { rating = it.roundToInt().toFloat() },
+                onValueChange = { rating = it.roundToInt().toFloat() }, // snap to whole stars
                 valueRange = 0f..5f,
-                steps = 4, // allows 0,1,2,3,4,5
+                steps = 4,
                 modifier = Modifier.fillMaxWidth()
             )
+
+            // Review input
             OutlinedTextField(
                 value = review,
                 onValueChange = { review = it },
@@ -103,17 +109,24 @@ fun AddEditBookScreen(navigateBack: () -> Unit, viewModel: BookViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-
+            // Save button
             Button(onClick = {
-                viewModel.insertBook(Book(
-                    title = title,
-                    author = author,
-                    progress = (progress * 100).toInt()))
+                viewModel.insertBook(
+                    Book(
+                        title = title,
+                        author = author,
+                        progress = progress,   // keep as Float
+                        rating = rating,
+                        review = review
+                    )
+                )
                 navigateBack()
             }) { Text("Save") }
+
+            // ISBN scan button
             IconButton(onClick = { /* Barcode scan logic */ }) {
                 Icon(
-                    imageVector = Icons.Default.QrCodeScanner,  // Use Material icon
+                    imageVector = Icons.Default.QrCodeScanner,
                     contentDescription = "Scan ISBN"
                 )
             }
@@ -128,7 +141,7 @@ fun AddEditBookScreenPreview() {
         val context = LocalContext.current
         AddEditBookScreen(
             navigateBack = {},
-            viewModel = BookViewModel(context.applicationContext as Application)  // Added ViewModel
+            viewModel = BookViewModel(context.applicationContext as Application)
         )
     }
 }

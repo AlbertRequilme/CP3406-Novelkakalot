@@ -9,7 +9,7 @@ data class Book(
     val title: String,
     val author: String,
     val coverUrl: String? = null,
-    val progress: Float = 0f,
+    val progress: Float,
     val rating: Float = 0f,
     val review: String? = null
 )

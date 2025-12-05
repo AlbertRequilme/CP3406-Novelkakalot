@@ -38,21 +38,21 @@ class MainActivity : ComponentActivity() {
                                 navigateToSuggestions = { navController.navigate("suggestions") }
                             )
                         }
-                        composable("bookList") { BookListScreen(
-                            navigateToAddEdit = { navController.navigate("addEdit") },
-                            viewModel = viewModel()
-                        ) }
-                        composable("addEdit") {
-                            AddEditBookScreen(
-                                navigateBack = { navController.popBackStack() },  // Added this
+                        composable("bookList") {
+                            BookListScreen(
+                                navigateToAddEdit = { navController.navigate("addEdit") },
                                 viewModel = viewModel()
                             )
                         }
-                        composable("suggestions") { SuggestionsScreen { navController.navigate("bookList") } }
-                        composable("addEdit") { AddEditBookScreen(
-                            navigateBack = { navController.popBackStack() },
-                            viewModel = viewModel()
-                        ) }
+                        composable("addEdit") {
+                            AddEditBookScreen(
+                                navigateBack = { navController.popBackStack() },
+                                viewModel = viewModel()
+                            )
+                        }
+                        composable("suggestions") {
+                            SuggestionsScreen { navController.navigate("bookList") }
+                        }
                     }
                 }
             }
